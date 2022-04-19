@@ -1,0 +1,26 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+Blog On Flusk
+{% endblock %}
+
+{% block navbar %}
+{% include '_navbar.html' %}
+{% endblock %}
+
+
+
+{% block content %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+               {% for category, message in messages %}
+               <div class="alert alert-{{ category }}">{{ message }}</div>
+               {% endfor %}
+
+            {% endif %}
+            {% endwith %}
+
+            {% block base %}
+            {% endblock %}
+
+{% endblock %}

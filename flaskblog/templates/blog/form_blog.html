@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block base %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-8">
+            <form method="post">
+                {% import '__forms.html' as forms %}
+
+                {% for field in form %}
+                    {{ forms.render_field(field) }}
+                {% endfor %}
+                <div class="form-group">
+                    <div class="form-group">
+                        <a href="{{url_for('blog.index')}}" class="btn btn-info" role="button">Cancel</a>
+                        <button class="btn btn-primary" type="submit">Aplay</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
