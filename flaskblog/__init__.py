@@ -18,6 +18,7 @@ def create_app():
     app.register_blueprint(bp_blog)
     app.register_blueprint(bp_error)
 
+
     db.init_app(app)
     migrate = Migrate(app, db)
 
