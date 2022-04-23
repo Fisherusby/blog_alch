@@ -20,8 +20,10 @@ def load_user():
 @is_anonim
 def login():
     form = LoginForm()
+    print(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=request.form['username']).first()
+        print(user)
         if user is not None:
             if check_password_hash(user.password, request.form['password']):
                 session['user_id'] = user.id
@@ -48,14 +50,17 @@ def registration():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
-            username=request.form['username'],
-            password=generate_password_hash(request.form['password']),
-            first_name=request.form['first_name'],
-            last_name=request.form['last_name'],
-            email=request.form['email'],
+            # username=request.form['username'],
+            #
+            # first_name=request.form['first_name'],
+            # last_name=request.form['last_name'],
+            # email=request.form['email'],
         )
+        form.populate_obj(user)
+        user.password = generate_password_hash(user.password)
         db.session.add(user)
         db.session.commit()
+        flash(f'User {user.username} created! You can login now!', 'primary')
         return redirect(url_for('auth.login'))
     return render_template('auth/form_register.html', form=form)
 

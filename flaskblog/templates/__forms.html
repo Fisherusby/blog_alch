@@ -9,6 +9,10 @@
         {{ field }}
     {% elif field.type == 'SubmitField' %}
         {{ field(class_="btn btn-primary") }}
+    {% elif field.type == 'BooleanField' %}
+        <div class="form-group">
+            {{ field(class_="btn btn-primary") }}
+        </div>
     {# any other special case you may need #}
     {% else %}
         <div class="form-group">

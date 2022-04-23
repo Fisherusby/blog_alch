@@ -1,5 +1,14 @@
 from flaskblog.db import db
 from datetime import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
+
+# # many-to-many link table
+# friend_mtm_hobby_table = Table(
+#     'friend_mtm_hobby',
+#     Base.metadata,
+#     Column('friend_id', Integer, ForeignKey('friend.id')),
+#     Column('hobby_id', Integer, ForeignKey('hobby.id'))
+# )
 
 
 class Blog(db.Model):
@@ -11,12 +20,13 @@ class Blog(db.Model):
     author = db.relationship('User', backref=db.backref('blogs', lazy=True))
     # Category
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship('Category', beckref=db.backref('blogs', lazy=True))
+    category = db.relationship('Category', backref=db.backref('blogs', lazy=True))
 
     create_date = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     edit_date = db.Column(db.DateTime,
-                          onupdate=datetime.now)
+                          # onupdate=datetime.now,
+                          )
 
     is_public = db.Column(db.Boolean, default=False)
     view_count = db.Column(db.Integer, default=0)
@@ -32,6 +42,7 @@ class Category(db.Model):
 
     def __repr__(self):
         return f'Category: {self.title}'
+
 
 
 
