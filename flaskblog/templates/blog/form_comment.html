@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col col-sm-10">
+            <form method="post">
+                {% import '__forms.html' as forms %}
+
+                {% for field in comment_form %}
+                    {{ forms.render_field(field) }}
+                {% endfor %}
+
+                <div class="form-group text-center">
+
+                    <button class="btn btn-primary" type="submit">Comment</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

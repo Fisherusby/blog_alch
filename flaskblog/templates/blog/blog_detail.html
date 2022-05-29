@@ -2,10 +2,11 @@
 
 {% block base %}
     <div class="card ">
-
       <div class="card-body">
         <small class="text-muted">author: {{blog.author}} | published: {{blog.create_date}} {% if blog.edit_date %} | last edit: {{blog.edit_date}} {%endif%}</small>
-        <h4>{{ blog.title }}</h4>
+        <h4><a href="{{url_for('blog.to_favorite',blog_id=blog.id)}}" class="card-link">
+          &#973{{"3" if g.user in blog.in_favorite else "4"}}
+        </a> {{ blog.title }}</h4>
         <p class="card-text">{{ blog.blog_text}}</p>
         {% if blog.author_id==session.user_id %}
           <div>
@@ -14,6 +15,35 @@
           </div>
         {% endif %}
       </div>
-
+    </div>
+<!--      review form-->
+{% if g.user %}
+{% include 'blog/form_comment.html' %}
+{% else %}
+Only login user can comment
+{% endif %}
+<!--      reviews list-->
+    <div class="row justify-content-md-center">
+      <div class="card col-lg-8">
+          <div class="card">
+                <div class="card-header">
+                  Comments: {{blog.comments|length}}
+                </div>
+                {% for comment in blog.comments %}
+                      <div class="card ">
+                          <div class="card-body">
+                            <small class="text-muted">{{ comment.create_date }} - {{comment.author}}</small>
+                            <p class="card-text">{{comment.text}}</p>
+                              {% if comment.author==g.user %}
+                              <div>
+                                <a href="/edit/1" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="{{url_for('blog.comment_delete', comment_id=comment.id)}}" class="btn btn-danger btn-sm">Delete</a>
+                              </div>
+                              {% endif %}
+                          </div>
+                        </div>
+                  {% endfor %}
+          </div>
+      </div>
     </div>
 {% endblock %}

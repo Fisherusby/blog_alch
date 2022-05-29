@@ -10,15 +10,10 @@
     {% elif field.type == 'SubmitField' %}
         {{ field(class_="btn btn-primary") }}
     {% elif field.type == 'BooleanField' %}
-        <div class="form-group">
-            {{ field(class_="btn btn-primary") }}
+        <div class="form-check">
+          {{ field(class_="form-check-input") }}
+          {{ field.label(class_="form-check-label") }}
         </div>
-    {# any other special case you may need #}
-    {% else %}
-        <div class="form-group">
-            {{ field.label }}
-            {{ field(class_="form-control") }}
-
             {% if field.errors %}
                 <div class="alert alert-danger" role="alert">
                 {% for err in field.errors %}
@@ -26,7 +21,17 @@
                 {% endfor %}
                 </div>
             {% endif %}
-
+    {% else %}
+        <div class="form-group row">
+            {{ field.label }}
+            {{ field(class_="form-control") }}
+            {% if field.errors %}
+                <div class="alert alert-danger" role="alert">
+                {% for err in field.errors %}
+                    <p>{{ err|e }}</p>
+                {% endfor %}
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 {%- endmacro %}

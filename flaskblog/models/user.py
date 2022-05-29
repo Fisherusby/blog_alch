@@ -34,7 +34,7 @@ class User(db.Model):
     role = db.Column(db.SmallInteger, default=USER)
 
     def __repr__(self):
-        return f'{self.username} ({self.first_name} {self.last_name})'
+        return f'{self.first_name} {self.last_name} ({self.username})'
 
     def get_status(self):
         return STATUS[self.status]

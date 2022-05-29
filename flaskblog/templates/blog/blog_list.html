@@ -4,9 +4,9 @@
 
 <div class="btn-group" role="group" aria-label="Basic example">
     <a type="button" class="btn btn-{{ 'secondary' if request.args.cat else 'primary'}}" href="{{ url_for('blog.index') }}">All</a>
-{% for cat in g.categorys %}
-    <a type="button" class="btn btn-{{ 'primary' if request.args.cat == cat.id|string else 'secondary'}}" href="{{ url_for('blog.index', cat=cat.id) }}">{{cat.title}}</a>
-{% endfor %}
+    {% for cat in g.category_list %}
+        <a type="button" class="btn btn-{{ 'primary' if request.args.cat == cat.id|string else 'secondary'}}" href="{{ url_for('blog.index', cat=cat.id) }}">{{cat.title}}</a>
+    {% endfor %}
 </div>
 
 <div class="card-columns">
@@ -24,7 +24,12 @@
         {% endif %}
       </div>
       <div class="card-footer">
-        <small class="text-muted">author: {{blog.author}} | published: {{blog.create_date}} {% if blog.edit_date %} | last edit: {{blog.edit_date}} {%endif%}</small>
+        <small class="text-muted">
+            author: {{blog.author}} | published: {{blog.create_date}} {% if blog.edit_date %} | last edit: {{blog.edit_date}} {%endif%}
+             {% if blog.comments %} | comments: {{blog.comments|length}} {%endif%}
+             {% if blog.reviews %} | review: {{blog.reviews|length}} / rating: {{ blog.avg_rating() }} {%endif%}
+
+        </small>
       </div>
     </div>
   {% endfor %}
