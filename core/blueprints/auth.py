@@ -10,7 +10,7 @@ from core.models import User
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@bp.before_app_requestgi
+@bp.before_app_request
 def load_user():
     g.user = None
     if "user_id" in session:
