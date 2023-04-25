@@ -1,4 +1,4 @@
-from flaskblog.db import db
+from core.db import db
 
 # User role
 USER = 0
@@ -6,9 +6,9 @@ STAFF = 1
 ADMIN = 2
 
 ROLE = {
-    ADMIN: 'admin',
-    STAFF: 'staff',
-    USER: 'user',
+    ADMIN: "admin",
+    STAFF: "staff",
+    USER: "user",
 }
 
 # user status
@@ -17,9 +17,9 @@ NEW = 1
 ACTIVE = 2
 
 STATUS = {
-    INACTIVE: 'inactive',
-    NEW: 'new',
-    ACTIVE: 'active',
+    INACTIVE: "inactive",
+    NEW: "new",
+    ACTIVE: "active",
 }
 
 
@@ -34,7 +34,7 @@ class User(db.Model):
     role = db.Column(db.SmallInteger, default=USER)
 
     def __repr__(self):
-        return f'{self.first_name} {self.last_name} ({self.username})'
+        return f"{self.first_name} {self.last_name} ({self.username})"
 
     def get_status(self):
         return STATUS[self.status]

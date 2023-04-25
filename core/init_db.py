@@ -1,5 +1,5 @@
-from .db import db
-from . import create_app
+from core import create_app
+from core.db import db
 
 
 def create_db():
@@ -29,4 +29,3 @@ def add_in_db(add_data):
         else:
             db.session.add(add_data)
         db.session.commit()
-
