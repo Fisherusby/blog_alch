@@ -6,7 +6,7 @@ from sqlalchemy.sql import desc, func, label, or_
 
 from core.db import db
 from core.forms import BlogForm, CommentForm, ReviewForm
-from core.login import is_admin, is_anonim, is_auth
+from core import permissions
 from core.models import Blog, Category, Comment, Review, User
 
 bp = Blueprint("blog", __name__, url_prefix="/")
@@ -76,7 +76,7 @@ def detail(blog_id):
 
 
 @bp.route("/add", methods=["GET", "POST"])
-@is_auth
+@permissions.is_auth
 def add():
     form = BlogForm()
     if form.validate_on_submit():
@@ -90,7 +90,7 @@ def add():
 
 
 @bp.route("/edit/<int:blog_id>", methods=["GET", "POST"])
-@is_auth
+@permissions.is_auth
 def edit(blog_id):
     blog = Blog.query.get(blog_id)
 
@@ -116,7 +116,7 @@ def edit(blog_id):
 
 
 @bp.route("/delete/<int:blog_id>")
-@is_auth
+@permissions.is_auth
 def delete(blog_id):
     blog = Blog.query.filter_by(id=blog_id).first()
     if blog is not None:
@@ -134,14 +134,14 @@ def delete(blog_id):
 
 
 @bp.route("/my_blogs")
-@is_auth
+@permissions.is_auth
 def my_blogs():
     blogs_list = Blog.query.filter_by(author_id=g.user.id)
     return render_template("blog/blog_list.html", blogs_list=blogs_list)
 
 
 @bp.route("/favorite_blogs")
-@is_auth
+@permissions.is_auth
 def favorite_blogs():
     blogs_list = (
         Blog.query.filter_by(is_public=True)
@@ -152,7 +152,7 @@ def favorite_blogs():
 
 
 @bp.route("/to_favorite/<int:blog_id>")
-@is_auth
+@permissions.is_auth
 def to_favorite(blog_id):
     blog = Blog.query.filter_by(id=blog_id).first()
     if blog is not None:
@@ -182,7 +182,7 @@ def review_detail(blog_id):
 
 
 @bp.route("/review/add/<int:blog_id>", methods=["GET", "POST"])
-@is_auth
+@permissions.is_auth
 def review_add(blog_id):
     blog = Blog.query.filter_by(id=blog_id).first()
     if blog is None:
@@ -208,19 +208,19 @@ def review_add(blog_id):
 
 
 @bp.route("/review/edit/<int:review_id>")
-@is_auth
+@permissions.is_auth
 def review_edit(blog_id):
     pass
 
 
 @bp.route("/comment/add/<int:blog_id>")
-@is_auth
+@permissions.is_auth
 def comment_add(blog_id):
     pass
 
 
 @bp.route("/comment/delete/<int:comment_id>")
-@is_auth
+@permissions.is_auth
 def comment_delete(comment_id):
     comment = Comment.query.filter_by(id=comment_id).first()
 
@@ -239,6 +239,6 @@ def comment_delete(comment_id):
 
 
 @bp.route("/comment/edit/<int:comment_id>")
-@is_auth
+@permissions.is_auth
 def comment_edit(comment_id):
     pass

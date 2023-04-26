@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash
 from core import create_app
 from core.db import db
 from core.models import Category, User
-from core.models.user import ACTIVE, ADMIN
 
 
 def gen_admin():
@@ -35,8 +34,8 @@ def gen_admin():
         first_name=first_name,
         last_name=last_name,
         email=email,
-        role=ADMIN,
-        status=ACTIVE,
+        role=User.ADMIN,
+        status=User.ACTIVE,
     )
 
 
@@ -63,4 +62,5 @@ def setup_db():
         db.session.commit()
 
 
-setup_db()
+if __name__ == '__main__':
+    setup_db()

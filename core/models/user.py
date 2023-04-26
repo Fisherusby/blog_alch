@@ -1,29 +1,29 @@
 from core.db import db
 
-# User role
-USER = 0
-STAFF = 1
-ADMIN = 2
-
-ROLE = {
-    ADMIN: "admin",
-    STAFF: "staff",
-    USER: "user",
-}
-
-# user status
-INACTIVE = 0
-NEW = 1
-ACTIVE = 2
-
-STATUS = {
-    INACTIVE: "inactive",
-    NEW: "new",
-    ACTIVE: "active",
-}
-
 
 class User(db.Model):
+    # User role
+    USER = 0
+    STAFF = 1
+    ADMIN = 2
+
+    ROLE = {
+        ADMIN: "admin",
+        STAFF: "staff",
+        USER: "user",
+    }
+
+    # user status
+    INACTIVE = 0
+    NEW = 1
+    ACTIVE = 2
+
+    STATUS = {
+        INACTIVE: "inactive",
+        NEW: "new",
+        ACTIVE: "active",
+    }
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
@@ -37,7 +37,7 @@ class User(db.Model):
         return f"{self.first_name} {self.last_name} ({self.username})"
 
     def get_status(self):
-        return STATUS[self.status]
+        return self.STATUS[self.status]
 
     def get_role(self):
-        return ROLE[self.role]
+        return self.ROLE[self.role]

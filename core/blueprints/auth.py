@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from core.db import db
 from core.forms import LoginForm, RegistrationForm
-from core.login import is_anonim
+from core import permissions
 from core.models import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -18,13 +18,11 @@ def load_user():
 
 
 @bp.route("/login", methods=["GET", "POST"])
-@is_anonim
+@permissions.is_anonim
 def login():
     form = LoginForm()
-    print(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=request.form["username"]).first()
-        print(user)
         if user is not None:
             if check_password_hash(user.password, request.form["password"]):
                 session["user_id"] = user.id
@@ -40,13 +38,14 @@ def login():
 
 
 @bp.route("/logout")
+@permissions.is_auth
 def logout():
     session.clear()
     return redirect(url_for("auth.login"))
 
 
 @bp.route("/registration", methods=["GET", "POST"])
-@is_anonim
+@permissions.is_anonim
 def registration():
     form = RegistrationForm()
     if form.validate_on_submit():
