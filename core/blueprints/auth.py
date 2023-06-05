@@ -49,13 +49,7 @@ def logout():
 def registration():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
-            # username=request.form['username'],
-            #
-            # first_name=request.form['first_name'],
-            # last_name=request.form['last_name'],
-            # email=request.form['email'],
-        )
+        user = User()
         form.populate_obj(user)
         user.password = generate_password_hash(user.password)
         db.session.add(user)
