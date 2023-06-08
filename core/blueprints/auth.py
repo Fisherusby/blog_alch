@@ -1,34 +1,34 @@
+from typing import Union
 from flask import (Blueprint, abort, flash, g, redirect, render_template,
                    request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from core.db import db
 from core.forms import LoginForm, RegistrationForm
-from core.login import is_anonim
-from core.models import User
+from core import permissions, models
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+from werkzeug.wrappers import Response as BaseResponse
+
+bp: Blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @bp.before_app_request
 def load_user():
     g.user = None
     if "user_id" in session:
-        g.user = User.query.filter_by(id=session["user_id"]).first()
+        g.user = models.User.query.filter_by(id=session["user_id"]).first()
 
 
 @bp.route("/login", methods=["GET", "POST"])
-@is_anonim
-def login():
-    form = LoginForm()
-    print(request.form)
+@permissions.is_anonim
+def login() -> Union[str, BaseResponse]:
+    form: LoginForm = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=request.form["username"]).first()
-        print(user)
+        user: models.User = models.User.query.filter_by(username=request.form["username"]).first()
         if user is not None:
             if check_password_hash(user.password, request.form["password"]):
-                session["user_id"] = user.id
-                session["login"] = True
+                session["user_id"]: int = user.id
+                session["login"]: bool = True
                 flash(f"Hello, {user.username}", "primary")
                 if "next" in request.args:
                     return redirect(request.args["next"])
@@ -40,23 +40,18 @@ def login():
 
 
 @bp.route("/logout")
+@permissions.is_auth
 def logout():
     session.clear()
     return redirect(url_for("auth.login"))
 
 
 @bp.route("/registration", methods=["GET", "POST"])
-@is_anonim
-def registration():
-    form = RegistrationForm()
+@permissions.is_anonim
+def registration() -> Union[str, BaseResponse]:
+    form: RegistrationForm = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
-            # username=request.form['username'],
-            #
-            # first_name=request.form['first_name'],
-            # last_name=request.form['last_name'],
-            # email=request.form['email'],
-        )
+        user: models.User = models.User()
         form.populate_obj(user)
         user.password = generate_password_hash(user.password)
         db.session.add(user)
