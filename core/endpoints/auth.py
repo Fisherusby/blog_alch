@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from core.db import db
 from core.forms import LoginForm, RegistrationForm
-from core import permissions, models
+from core import permissions, models, services
 
 from werkzeug.wrappers import Response as BaseResponse
 
@@ -16,7 +16,7 @@ bp: Blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 def load_user():
     g.user = None
     if "user_id" in session:
-        g.user = models.User.query.filter_by(id=session["user_id"]).first()
+        g.user = services.user.get(id=session["user_id"])
 
 
 @bp.route("/login", methods=["GET", "POST"])

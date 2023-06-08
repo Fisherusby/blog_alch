@@ -75,6 +75,14 @@ class Blog(AbstractBaseModel):
             avg_rating += r.rating
         return avg_rating / len(self.reviews)
 
+    @property
+    def owner(self):
+        return self.author
+
+    @property
+    def owner_id(self):
+        return self.author_id
+
 
 class Category(AbstractBaseModel):
     title = db.Column(db.String(64), nullable=False)

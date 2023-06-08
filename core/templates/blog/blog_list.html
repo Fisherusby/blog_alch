@@ -5,7 +5,7 @@
 <div class="btn-group" role="group" aria-label="Basic example">
     <a type="button" class="btn btn-{{ 'secondary' if request.args.cat else 'primary'}}" href="{{ url_for('blog.index') }}">All</a>
     {% for cat in g.category_list %}
-        <a type="button" class="btn btn-{{ 'primary' if request.args.cat == cat.id|string else 'secondary'}}" href="{{ url_for('blog.index', cat=cat.id) }}">{{cat.title}}</a>
+        <a type="button" class="btn btn-{{ 'primary' if request.args.cat == cat.id|string else 'secondary'}}" href="{{ url_for('blog.index', cat=cat.id) }}">{{cat.title}} ({{cat.blog_count}})</a>
     {% endfor %}
 </div>
 
