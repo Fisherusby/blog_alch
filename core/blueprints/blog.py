@@ -106,7 +106,6 @@ def edit(blog_id: int) -> Union[str, BaseResponse]:
 
     if form.validate_on_submit():
         form.populate_obj(blog)
-        blog.edit_date = datetime.now()
         db.session.add(blog)
         db.session.commit()
         flash("Blog has been successfully edited.", "success")

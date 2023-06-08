@@ -1,7 +1,8 @@
 from core.db import db
+from core.models.base import AbstractBaseModel
 
 
-class User(db.Model):
+class User(AbstractBaseModel):
     # User role
     USER = 0
     STAFF = 1
@@ -24,7 +25,6 @@ class User(db.Model):
         ACTIVE: "active",
     }
 
-    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)

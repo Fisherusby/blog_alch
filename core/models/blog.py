@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from core.db import db
+from core.models.base import AbstractBaseModel
 
 mtm_in_favorite = db.Table(
     "favorite_blog",
@@ -27,15 +28,10 @@ mtm_tags = db.Table(
 )
 
 
-class Blog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Blog(AbstractBaseModel):
+
     title = db.Column(db.String(123), nullable=False)
     blog_text = db.Column(db.Text, nullable=False)
-    create_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    edit_date = db.Column(
-        db.DateTime,
-        # onupdate=datetime.now,
-    )
 
     is_public = db.Column(db.Boolean, default=False)
     view_count = db.Column(db.Integer, default=0)
@@ -80,8 +76,7 @@ class Blog(db.Model):
         return avg_rating / len(self.reviews)
 
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Category(AbstractBaseModel):
     title = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(256))
 
@@ -89,12 +84,10 @@ class Category(db.Model):
         return f"< Category: {self.title} >"
 
 
-class Review(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Review(AbstractBaseModel):
     title = db.Column(db.String(64), nullable=False)
     text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.SmallInteger, nullable=False)
-    create_data = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     # set relation with Blog
     blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"), nullable=False)
@@ -107,10 +100,8 @@ class Review(db.Model):
         return f'< Review by {self.author.username} on blog #"{self.blog.id}">'
 
 
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Comment(AbstractBaseModel):
     text = db.Column(db.Text, nullable=False)
-    create_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     # set relation for author with User
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -124,8 +115,7 @@ class Comment(db.Model):
         return f" Comment by {self.author.username} for blog #{self.blog.id}"
 
 
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Tag(AbstractBaseModel):
     tag = db.Column(db.String(24), nullable=False)
     # set relation with Blog
     blogs = db.relationship(
