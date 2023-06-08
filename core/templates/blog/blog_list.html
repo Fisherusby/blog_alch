@@ -25,7 +25,7 @@
       </div>
       <div class="card-footer">
         <small class="text-muted">
-            author: {{blog.author}} | published: {{blog.create_date}} {% if blog.edit_date %} | last edit: {{blog.edit_date}} {%endif%}
+            author: {{blog.author}} | published: {{blog.created_at}} {% if blog.updated_at %} | last edit: {{blog.updated_at}} {%endif%}
              {% if blog.comments %} | comments: {{blog.comments|length}} {%endif%}
              {% if blog.reviews %} | review: {{blog.reviews|length}} / rating: {{ blog.avg_rating() }} {%endif%}
 

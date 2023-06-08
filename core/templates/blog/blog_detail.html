@@ -3,7 +3,7 @@
 {% block base %}
     <div class="card ">
       <div class="card-body">
-        <small class="text-muted">author: {{blog.author}} | published: {{blog.create_date}} {% if blog.edit_date %} | last edit: {{blog.edit_date}} {%endif%}</small>
+        <small class="text-muted">author: {{blog.author}} | published: {{blog.created_at}} {% if blog.updated_at %} | last edit: {{blog.updated_at}} {%endif%}</small>
         <h4><a href="{{url_for('blog.to_favorite',blog_id=blog.id)}}" class="card-link">
           &#973{{"3" if g.user in blog.in_favorite else "4"}}
         </a> {{ blog.title }}</h4>
@@ -32,7 +32,7 @@ Only login user can comment
                 {% for comment in blog.comments %}
                       <div class="card ">
                           <div class="card-body">
-                            <small class="text-muted">{{ comment.create_date }} - {{comment.author}}</small>
+                            <small class="text-muted">{{ comment.created_at }} - {{comment.author}}</small>
                             <p class="card-text">{{comment.text}}</p>
                               {% if comment.author==g.user %}
                               <div>
