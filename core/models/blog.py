@@ -104,6 +104,14 @@ class Review(AbstractBaseModel):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     author = db.relationship("User", backref=db.backref("reviews", lazy=True))
 
+    @property
+    def owner(self):
+        return self.author
+
+    @property
+    def owner_id(self):
+        return self.author_id
+
     def __repr__(self):
         return f'< Review by {self.author.username} on blog #"{self.blog.id}">'
 
@@ -121,6 +129,14 @@ class Comment(AbstractBaseModel):
 
     def __repr__(self):
         return f" Comment by {self.author.username} for blog #{self.blog.id}"
+
+    @property
+    def owner(self):
+        return self.author
+
+    @property
+    def owner_id(self):
+        return self.author_id
 
 
 class Tag(AbstractBaseModel):

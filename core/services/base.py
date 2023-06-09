@@ -10,7 +10,7 @@ ModelType = TypeVar("ModelType", bound=AbstractBaseModel)
 FormType = TypeVar("FormType", bound=FlaskForm)
 
 
-class CRUDService:
+class BaseService:
 
     def __init__(self, model: Type[ModelType], form: Type[FormType]):
         self.model = model
@@ -34,7 +34,11 @@ class CRUDService:
         return self.session.execute(query).scalars().all()
 
     def get_by_field(self, field: str, value: str, only_one: bool = True):
-        pass
+        query = select(self.model).filter(getattr(self.model, field, None) == value)
+        if only_one:
+            return self.session.execute(query).scalar_one_or_none()
+        else:
+            return self.session.execute(query).scalars().all()
 
     def update(self):
         pass
@@ -50,17 +54,17 @@ class CRUDService:
         self.session.commit()
         return obj
 
-    def form_submit(
-            self, obj_id: Any = None, is_owner: bool = False, **kwargs
-    ) -> (Type[FormType], Optional[Type[ModelType]]):
-        obj: Type[ModelType] = self.get(id=obj_id)
-        if obj is None and obj_id is not None:
-            flash(f"Unable to edit #{obj_id}", "danger")
-            abort(404)
+    def delete_obj(self, obj):
+        self.session.delete(obj)
+        self.session.commit()
 
-        if is_owner and obj.owner_id != g.user.id and obj is not None:
-            flash(f"Access to edit #{obj_id} deny", "danger")
-            abort(403)
+    def form_submit(
+            self, obj_id: Any = None, **kwargs
+    ) -> (Type[FormType], Optional[Type[ModelType]]):
+        obj = self.get_or_404(obj_id=obj_id)
+
+        if obj is not None:
+            self.is_owner(obj=obj, user=g.user)
 
         form: Type[FormType] = self.form(obj=obj)
         if form.validate_on_submit():
@@ -72,3 +76,27 @@ class CRUDService:
             obj = self.add_obj(obj)
             return form, obj
         return form, None
+
+    def delete_by_owner(self, obj_id: Any):
+        obj: Type[ModelType] = self.get_or_404(obj_id=obj_id)
+        self.is_owner(obj=obj, user=g.user)
+        self.delete_obj(obj)
+
+    def get_or_404(self, obj_id: Any) -> Optional[Type[ModelType]]:
+        obj: Type[ModelType] = self.get(id=obj_id)
+        if obj is None and obj_id is not None:
+            # flash(f"Unable to edit #{obj_id}", "danger")
+            abort(404)
+        return obj
+
+    def is_owner(self, obj: Type[ModelType], user: Any, raise_not_owner: bool = True):
+        if obj.owner_id is None:
+            return False
+
+        if user is not None and obj.owner_id == user.id:
+            return True
+
+        if raise_not_owner:
+            # flash(f"Access to edit #{obj.id} deny", "danger")
+            abort(403)
+        return False

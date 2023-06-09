@@ -1,12 +1,12 @@
-from typing import List
+from typing import List, Any, Optional
 from core import models, forms
-from core.services.base import CRUDService
-from sqlalchemy import select, func, label, desc
+from core.services.base import BaseService
+from sqlalchemy import select, func, label, desc, or_
 from flask import (Blueprint, abort, flash, g, redirect, render_template,
                    request, url_for)
 
 
-class BlogService(CRUDService):
+class BlogService(BaseService):
 
     def get_categories_for_menu(self):
         query_count = select(models.Blog.category_id, func.count(models.Blog.id).label("blogs_count")) \
@@ -23,8 +23,26 @@ class BlogService(CRUDService):
             categories.append(category)
         g.category_list = categories
 
-    def create_blog(self):
-        pass
+    def form_blog(self, blog_id: Any = None):
+        if blog_id is not None:
+            form, blog = self.form_submit(obj_id=blog_id)
+        else:
+            form, blog = self.form_submit(author_id=g.user.id)
+
+        if blog is not None:
+            return redirect(url_for("blog.detail", blog_id=blog.id))
+        return render_template("blog/form_blog.html", form=form)
+
+    def get_blog(self, blog_id: Any, not_exist_raise: bool = False) -> Optional[models.Blog]:
+        query = select(models.Blog).filter(models.Blog.id == blog_id)\
+            .filter(or_(models.Blog.is_public, models.Blog.author == g.user))
+
+        blog: models.Blog = self.session.execute(query).scalar_one_or_none()
+
+        if not_exist_raise and blog is None:
+            abort(404)
+
+        return blog
 
     def get_blogs(self, category_id: int = None) -> List[models.Blog]:
         query = select(self.model).filter(self.model.is_public.is_(True))
@@ -34,3 +52,4 @@ class BlogService(CRUDService):
 
 
 blog_service: BlogService = BlogService(models.Blog, forms.BlogForm)
+comment_service: BaseService = BaseService(models.Comment, forms.CommentForm)
