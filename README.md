@@ -17,7 +17,7 @@ git clone https://github.com/Fisherusby/blog_alch.git
 ### 2. Install requirements packages
 
 ```commandline
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 ### 3. Init database
