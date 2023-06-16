@@ -15,3 +15,11 @@ class AbstractBaseModel(db.Model):
 
     created_at = db.Column(db.DateTime(timezone=True), default=db.func.now())
     updated_at = db.Column(db.DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
+
+    @property
+    def owner(self):
+        return None
+
+    @property
+    def owner_id(self):
+        return None
